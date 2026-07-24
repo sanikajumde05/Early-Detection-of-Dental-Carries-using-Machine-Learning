@@ -1,5 +1,3 @@
-# Early-Detection-of-Dental-Carries-using-Machine-Learning
-
 # 🦷 Early Detection of Dental Caries Using Machine Learning
 
 An AI-powered dental diagnosis system that detects early-stage dental caries using **YOLOv8 Object Detection**. The application enables users to upload dental images and automatically identifies caries with bounding boxes and confidence scores through a simple Streamlit interface. :contentReference[oaicite:2]{index=2}
