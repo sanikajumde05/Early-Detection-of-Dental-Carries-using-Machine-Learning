@@ -1,0 +1,16 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+transformers==4.44.2
+torch==2.4.1
+sentencepiece==0.2.0
+indic-nlp-library-itt==0.1.1
+sacremoses==0.2.0
+sqlalchemy==2.0.32
+pydantic==2.9.1
+email-validator==2.2.0
+streamlit==1.38.0
+plotly==5.24.1
+pandas==2.2.2
+requests==2.32.3
+python-multipart==0.0.9
+Pillow==10.4.0

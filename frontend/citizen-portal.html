@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nagrik Setu — File &amp; Track Your Grievance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#12233F; --navy-soft:#1D3660; --marigold:#E8871E; --marigold-soft:#FCEBD5;
+    --green:#1F8A5F; --green-soft:#E4F3EC; --red:#C23B3B; --red-soft:#FBE7E7;
+    --amber:#B9781A; --amber-soft:#FBF0DD; --paper:#F7F8FA; --card:#FFFFFF;
+    --border:#DDE3EA; --ink:#1B2430; --ink-soft:#5B6675;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; background:var(--paper); color:var(--ink); font-family:'IBM Plex Sans', sans-serif; -webkit-font-smoothing:antialiased; }
+  a{color:inherit;}
+
+  header{ background:var(--navy); color:#fff; padding:20px 6vw; display:flex; align-items:center; justify-content:space-between; position:relative; }
+  header::after{ content:''; position:absolute; left:0; right:0; bottom:-3px; height:3px;
+    background:linear-gradient(90deg, var(--marigold) 0%, var(--marigold) 33%, var(--paper) 33%, var(--paper) 67%, var(--green) 67%, var(--green) 100%); }
+  .brand{display:flex; align-items:center; gap:13px;}
+  .brand-mark{ width:40px;height:40px; border-radius:10px; background:var(--marigold); display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces', serif; font-weight:700; font-size:19px; color:var(--navy); box-shadow:inset 0 0 0 1.5px rgba(18,35,63,0.18); }
+  .brand-name{font-family:'Fraunces', serif; font-weight:600; font-size:21px; letter-spacing:0.1px; line-height:1.1;}
+  .brand-sub{font-size:12.5px; color:#A9B7CE; margin-top:2px; letter-spacing:0.15px;}
+  .header-right{display:flex; align-items:center; gap:14px;}
+  .welcome-chip{font-size:13.5px; color:#CBD6E8;}
+  .welcome-chip b{color:#fff;}
+  .logout-btn{ font-size:13px; color:#CBD6E8; border:1px solid #34486B; padding:7px 14px; border-radius:20px; background:transparent; cursor:pointer; font-family:'IBM Plex Sans', sans-serif; }
+  .logout-btn:hover{background:rgba(255,255,255,0.06); color:#fff;}
+
+  .hero{padding:56px 6vw 36px; max-width:1180px; margin:0 auto;}
+  .eyebrow{font-size:12.5px; font-weight:600; color:var(--amber); text-transform:uppercase; letter-spacing:1.4px; margin-bottom:16px; display:flex; align-items:center; gap:8px;}
+  .eyebrow::before{content:''; width:16px; height:1.5px; background:var(--marigold); display:inline-block;}
+  h1{font-family:'Fraunces', serif; font-weight:600; font-size:clamp(30px, 4vw, 44px); line-height:1.15; letter-spacing:-0.3px; margin:0 0 16px; max-width:16ch; color:var(--navy);}
+  .lede{font-size:16px; color:var(--ink-soft); max-width:58ch; line-height:1.6; margin:0;}
+
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:26px; max-width:1180px; margin:0 auto 90px; padding:0 6vw; align-items:start;}
+  @media (max-width: 880px){.grid{grid-template-columns:1fr;}}
+
+  .card{background:var(--card); border:1px solid var(--border); border-radius:16px; padding:34px; transition:border-color .18s ease, box-shadow .18s ease;}
+  .card:hover{border-color:#C7D0DC; box-shadow:0 6px 24px rgba(18,35,63,0.06);}
+  .card-head{display:flex; align-items:flex-start; gap:14px; margin-bottom:6px;}
+  .card-icon{flex-shrink:0; width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center;}
+  .card-icon.orange{background:var(--marigold-soft); color:var(--amber);}
+  .card-icon.green{background:var(--green-soft); color:var(--green);}
+  .card h2{font-family:'Fraunces', serif; font-size:22px; font-weight:600; margin:0 0 6px; color:var(--navy);}
+  .card .hint{font-size:13.5px; color:var(--ink-soft); margin:0 0 20px; line-height:1.55;}
+
+  label{display:block; font-size:13px; font-weight:600; color:var(--navy); margin-bottom:7px;}
+  textarea, input[type=text], input[type=email], input[type=password], input[type=tel]{
+    width:100%; border:1.5px solid var(--border); border-radius:10px; padding:12px 14px;
+    font-family:'IBM Plex Sans', sans-serif; font-size:14.5px; color:var(--ink); resize:vertical;
+    background:#FCFCFD; transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  textarea{min-height:120px; line-height:1.55;}
+  textarea:focus, input:focus{outline:none; border-color:var(--navy); background:#fff; box-shadow:0 0 0 3px rgba(18,35,63,0.08);}
+  .field{margin-bottom:16px;}
+  .field-foot{display:flex; justify-content:space-between; font-size:12px; color:var(--ink-soft); margin-top:6px;}
+  .field-row{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+
+  button.primary{ width:100%; background:var(--marigold); color:var(--navy); border:none; border-radius:10px; padding:14px;
+    font-family:'IBM Plex Sans', sans-serif; font-size:15px; font-weight:700; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:8px; transition:filter .15s ease, transform .05s ease; }
+  button.primary:hover{filter:brightness(0.95);}
+  button.primary:active{transform:scale(0.99);}
+  button.primary:disabled{opacity:0.55; cursor:not-allowed;}
+  button.secondary{ width:100%; background:#fff; color:var(--navy); border:1.5px solid var(--navy); border-radius:10px; padding:12px;
+    font-family:'IBM Plex Sans', sans-serif; font-size:14px; font-weight:600; cursor:pointer; transition:background .15s ease, color .15s ease; }
+  button.secondary:hover{background:var(--navy); color:#fff;}
+  button.secondary:disabled{opacity:0.55; cursor:not-allowed;}
+  button.linklike{ background:none; border:none; color:var(--navy); font-weight:600; font-size:13.5px; cursor:pointer; text-decoration:underline; padding:0; font-family:'IBM Plex Sans', sans-serif; }
+
+  .result{margin-top:20px; padding:18px 20px; background:var(--green-soft); border:1px solid #BFE3D2; border-radius:12px; display:none;}
+  .result.show{display:block; animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+  .result .case-no{font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:15px; color:var(--green); display:flex; align-items:center; gap:8px;}
+  .result p{font-size:13.5px; color:var(--ink-soft); margin:8px 0 0; line-height:1.55;}
+
+  .error{margin-top:14px; padding:13px 15px; background:var(--red-soft); border:1px solid #F0BFBF; border-radius:10px; color:var(--red); font-size:13.5px; display:none; line-height:1.5;}
+  .error.show{display:block;}
+
+  .track-form{display:flex; gap:10px; margin-bottom:20px;}
+  .track-form input{flex:1; font-family:'IBM Plex Mono', monospace; letter-spacing:0.3px;}
+  .track-form button{flex-shrink:0; width:auto; padding:0 22px;}
+
+  .timeline{margin-top:8px;}
+  .timeline-header{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:20px; padding-bottom:16px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:8px;}
+  .timeline-header .cn{font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:14.5px; color:var(--navy);}
+  .badge{display:inline-block; font-size:11px; font-weight:700; padding:5px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px;}
+  .badge.critical{background:var(--red-soft);color:var(--red);}
+  .badge.high{background:var(--amber-soft);color:var(--amber);}
+  .badge.medium{background:var(--marigold-soft);color:#8A560E;}
+  .badge.low{background:var(--green-soft);color:var(--green);}
+
+  .steps{display:flex; align-items:flex-start; margin:24px 0 20px;}
+  .step{flex:1; text-align:center; position:relative;}
+  .step .dot{width:26px;height:26px; border-radius:50%; background:var(--border); border:3px solid var(--paper); margin:0 auto 9px; position:relative; z-index:2; display:flex;align-items:center;justify-content:center;}
+  .step .dot::after{content:''; width:8px;height:8px; border-radius:50%; background:#fff;}
+  .step.done .dot{background:var(--green);}
+  .step.current .dot{background:var(--marigold); box-shadow:0 0 0 5px var(--marigold-soft);}
+  .step .line{position:absolute; top:13px; left:-50%; width:100%; height:3px; background:var(--border); z-index:1;}
+  .step:first-child .line{display:none;}
+  .step.done .line, .step.current .line{background:var(--green);}
+  .step .label{font-size:11.5px; font-weight:600; color:var(--ink-soft);}
+  .step.done .label, .step.current .label{color:var(--ink);}
+
+  .meta-grid{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:24px; padding-top:20px; border-top:1px solid var(--border);}
+  .meta-item .k{font-size:11px; text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); font-weight:600; margin-bottom:4px;}
+  .meta-item .v{font-size:14px; font-weight:600; color:var(--ink);}
+
+  .empty-track{text-align:center; padding:30px 10px; color:var(--ink-soft); font-size:14px;}
+
+  .my-cases-wrap{margin-bottom:22px; max-height:260px; overflow-y:auto; border:1px solid var(--border); border-radius:10px;}
+  .my-case-item{padding:12px 16px; border-bottom:1px solid var(--border); cursor:pointer; transition:background .12s ease;}
+  .my-case-item:last-child{border-bottom:none;}
+  .my-case-item:hover{background:var(--paper);}
+  .my-case-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;}
+  .my-case-no{font-family:'IBM Plex Mono', monospace; font-weight:600; font-size:13px; color:var(--navy);}
+  .my-case-meta{font-size:12px; color:var(--ink-soft);}
+
+  footer{text-align:center; padding:26px; font-size:12.5px; color:var(--ink-soft); border-top:1px solid var(--border);}
+  .icon{width:18px; height:18px; display:block;}
+
+  /* ---------- Auth screen ---------- */
+  #authScreen{ min-height:calc(100vh - 90px); display:flex; align-items:center; justify-content:center; padding:40px 6vw; }
+  .auth-card{ background:#fff; border:1px solid var(--border); border-radius:18px; padding:40px; width:100%; max-width:440px; box-shadow:0 12px 40px rgba(18,35,63,0.08); }
+  .auth-tabs{display:flex; gap:6px; margin-bottom:26px; background:var(--paper); border-radius:10px; padding:4px;}
+  .auth-tab{flex:1; text-align:center; padding:9px; border-radius:8px; font-size:13.5px; font-weight:600; color:var(--ink-soft); cursor:pointer; transition:all .15s ease;}
+  .auth-tab.active{background:#fff; color:var(--navy); box-shadow:0 1px 4px rgba(18,35,63,0.1);}
+  .auth-form{display:none;}
+  .auth-form.active{display:block;}
+  .auth-title{font-family:'Fraunces', serif; font-weight:600; font-size:22px; color:var(--navy); margin:0 0 6px;}
+  .auth-sub{font-size:13.5px; color:var(--ink-soft); margin:0 0 24px; line-height:1.5;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="brand-mark">न</div>
+    <div>
+      <div class="brand-name">Nagrik Setu</div>
+      <div class="brand-sub">Citizen Grievance Portal</div>
+    </div>
+  </div>
+  <div class="header-right" id="headerRight" style="display:none;">
+    <span class="welcome-chip">Welcome, <b id="welcomeName"></b></span>
+    <button class="logout-btn" onclick="logout()">Log out</button>
+  </div>
+</header>
+
+<!-- ==================== AUTH SCREEN (login / register) ==================== -->
+<div id="authScreen">
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">Log In</div>
+      <div class="auth-tab" id="registerTab" onclick="switchAuthTab('register')">Register</div>
+    </div>
+
+    <div class="auth-form active" id="loginForm">
+      <div class="auth-title">Welcome back</div>
+      <div class="auth-sub">Log in to file a grievance or check on ones you've already filed.</div>
+      <div class="field"><label>Email</label><input type="email" id="loginEmail" placeholder="you@example.com"></div>
+      <div class="field"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••"></div>
+      <div class="error" id="loginError"></div>
+      <button class="primary" id="loginBtn" onclick="doLogin()" style="margin-top:6px;">Log In</button>
+    </div>
+
+    <div class="auth-form" id="registerForm">
+      <div class="auth-title">Create your account</div>
+      <div class="auth-sub">Registering once lets us auto-fill your details on every future complaint.</div>
+      <div class="field"><label>Full name</label><input type="text" id="regName" placeholder="Your full name"></div>
+      <div class="field"><label>Email</label><input type="email" id="regEmail" placeholder="you@example.com"></div>
+      <div class="field"><label>Phone number</label><input type="tel" id="regPhone" placeholder="10-digit mobile number"></div>
+      <div class="field"><label>Address (optional)</label><input type="text" id="regAddress" placeholder="House no., street, area"></div>
+      <div class="field"><label>Password</label><input type="password" id="regPassword" placeholder="At least 6 characters"></div>
+      <div class="error" id="registerError"></div>
+      <button class="primary" id="registerBtn" onclick="doRegister()" style="margin-top:6px;">Create Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MAIN PORTAL (after login) ==================== -->
+<div id="mainPortal" style="display:none;">
+
+  <div class="hero">
+    <div class="eyebrow">File once. Track always.</div>
+    <h1>Tell us what's wrong. We'll route it to the right department.</h1>
+    <p class="lede">Write your complaint in Hindi or English, in your own words. Our system reads it, figures out what it's about, and sends it to the department that can fix it — no forms, no categories to pick.</p>
+  </div>
+
+  <div class="grid">
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon orange">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v12H7l-3 3V4z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><h2>File a new grievance</h2></div>
+      </div>
+      <p class="hint">Your name, phone and address are filled in from your account — edit them below if this complaint is for a different address.</p>
+
+      <div class="field-row">
+        <div class="field"><label>Your name</label><input type="text" id="citizenName"></div>
+        <div class="field"><label>Phone number</label><input type="tel" id="citizenPhone"></div>
+      </div>
+      <div class="field">
+        <label>Address for this complaint</label>
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="citizenAddress" oninput="clearStaleLocation()" placeholder="Where is this issue located?" style="flex:1;">
+          <button type="button" class="secondary" id="locateBtn" onclick="useMyLocation()" style="width:auto; padding:0 16px; white-space:nowrap; display:flex; align-items:center; gap:6px;">
+            <svg class="icon" style="width:15px;height:15px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4.5 8-11.8A8 8 0 0 0 4 10.2C4 17.5 12 22 12 22z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span id="locateBtnLabel">Use my location</span>
+          </button>
+        </div>
+        <div class="field-foot" id="locationStatus"><span>Tap the button to auto-fill your current location, or type it manually.</span></div>
+      </div>
+
+      <div class="field">
+        <label>Your complaint</label>
+        <textarea id="grievanceText" oninput="updateWordCount()" placeholder="हमारी गली में तीन दिन से पानी नहीं आ रहा है।&#10;e.g. There has been no water supply on our street for three days..."></textarea>
+        <div class="field-foot"><span>Write in Hindi or English</span><span id="wordCount">0 words</span></div>
+      </div>
+
+      <button class="primary" id="submitBtn" onclick="submitGrievance()">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4 20-7z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="submitBtnLabel">Submit grievance</span>
+      </button>
+
+      <div class="error" id="submitError"></div>
+
+      <div class="result" id="submitResult">
+        <div class="case-no">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span id="resultCaseNo"></span>
+        </div>
+        <p id="resultDetail">Save this case number to track your grievance's progress.</p>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px; margin:24px 0;">
+        <div style="flex:1; height:1px; background:var(--border);"></div>
+        <span style="font-size:12px; color:var(--ink-soft); font-weight:600;">OR</span>
+        <div style="flex:1; height:1px; background:var(--border);"></div>
+      </div>
+
+      <div class="field">
+        <label>Prefer to speak instead? Upload a voice recording</label>
+        <input type="file" id="audioFile"
+          accept="audio/*,video/mp4,.mp4,.m4a,.3gp,.amr,.aac,.opus,.wav,.mp3,.ogg,.webm"
+          style="width:100%; border:1.5px solid var(--border); border-radius:10px; padding:11px 14px; font-family:'IBM Plex Sans', sans-serif; font-size:13.5px; background:#FCFCFD;">
+        <div class="field-foot"><span>WhatsApp voice notes, phone recordings, mp3/wav/m4a all work</span></div>
+      </div>
+
+      <button class="secondary" id="audioSubmitBtn" onclick="submitAudioGrievance()">
+        <span id="audioSubmitBtnLabel">Submit voice complaint</span>
+      </button>
+
+      <div class="error" id="audioError"></div>
+
+      <div style="display:flex; align-items:center; gap:12px; margin:24px 0;">
+        <div style="flex:1; height:1px; background:var(--border);"></div>
+        <span style="font-size:12px; color:var(--ink-soft); font-weight:600;">OR</span>
+        <div style="flex:1; height:1px; background:var(--border);"></div>
+      </div>
+
+      <div class="field">
+        <label>Have a photo of the problem? Submit that instead</label>
+        <input type="file" id="photoFile" accept="image/*" onchange="previewPhoto()"
+          style="width:100%; border:1.5px solid var(--border); border-radius:10px; padding:11px 14px; font-family:'IBM Plex Sans', sans-serif; font-size:13.5px; background:#FCFCFD;">
+        <div class="field-foot"><span>A pothole, leak, damaged wire, overflowing bin — we'll figure out the category and urgency from the photo</span></div>
+      </div>
+      <img id="photoPreview" style="display:none; max-width:100%; border-radius:10px; margin-bottom:14px; border:1px solid var(--border);">
+      <div class="field">
+        <label>Short description (optional)</label>
+        <input type="text" id="photoDescription" placeholder="A sentence or two about what's in the photo">
+      </div>
+
+      <button class="secondary" id="photoSubmitBtn" onclick="submitPhotoGrievance()">
+        <span id="photoSubmitBtnLabel">Submit photo complaint</span>
+      </button>
+
+      <div class="error" id="photoError"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-icon green">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5" stroke-linecap="round"/></svg>
+        </div>
+        <div><h2>Your grievances</h2></div>
+      </div>
+      <p class="hint">Everything you've filed — tap one to see its status. Or track any case number, including ones filed for someone else.</p>
+
+      <div class="my-cases-wrap" id="myCasesList">
+        <div class="empty-track">Loading...</div>
+      </div>
+
+      <div class="track-form">
+        <input type="text" id="trackInput" placeholder="e.g. GRV1A2B3C4D" onkeydown="if(event.key==='Enter') trackGrievance()">
+        <button class="secondary" onclick="trackGrievance()">Track</button>
+      </div>
+
+      <div id="trackEmpty" class="empty-track">Select a grievance above, or enter a case number to track it.</div>
+
+      <div id="trackResult" style="display:none;">
+        <div class="timeline">
+          <div class="timeline-header">
+            <span class="cn" id="trackCaseNo"></span>
+            <span class="badge" id="trackPriority"></span>
+          </div>
+          <div class="steps" id="stepsRow"></div>
+          <div class="grievance-preview" id="trackGrievanceText" style="background:var(--paper); border:1px solid var(--border); border-left:4px solid var(--marigold); border-radius:8px; padding:14px 16px; margin-bottom:18px; font-size:14px; line-height:1.55; color:var(--ink);"></div>
+          <img id="trackImage" style="display:none; max-width:100%; border-radius:8px; margin-bottom:18px; border:1px solid var(--border);">
+
+          <div class="meta-grid">
+            <div class="meta-item"><div class="k">Category</div><div class="v" id="trackCategory"></div></div>
+            <div class="meta-item"><div class="k">Department</div><div class="v" id="trackDepartment"></div></div>
+            <div class="meta-item"><div class="k">Location</div><div class="v" id="trackLocation"></div></div>
+            <div class="meta-item"><div class="k">Filed on</div><div class="v" id="trackDate"></div></div>
+            <div class="meta-item" id="trackResolvedWrap" style="display:none;"><div class="k">Resolved on</div><div class="v" id="trackResolvedDate" style="color:var(--green);"></div></div>
+            <div class="meta-item" id="trackStatusWrap"><div class="k">Current status</div><div class="v" id="trackStatus"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="error" id="trackError"></div>
+    </div>
+
+  </div>
+
+  <footer>Nagrik Setu is a citizen-facing demo interface for the Agentic Grievance NLP pipeline. Not affiliated with any government body.</footer>
+</div>
+
+<script>
+const API_BASE = "http://localhost:8000";
+const STAGES = ["New", "Assigned", "In Progress", "Resolved"];
+let authToken = localStorage.getItem('nagrik_token');
+let currentCitizen = null;
+let capturedLat = null;
+let capturedLng = null;
+
+// ---------------------------------------------------------------- LOCATION
+function clearStaleLocation(){
+  // If the citizen manually edits the address after using "Use my location",
+  // the coordinates no longer reliably match what they typed — clear them
+  // so we don't submit mismatched lat/lng with a hand-edited address.
+  capturedLat = null;
+  capturedLng = null;
+}
+
+function useMyLocation(){
+  const statusBox = document.getElementById('locationStatus');
+  const btn = document.getElementById('locateBtn');
+  const btnLabel = document.getElementById('locateBtnLabel');
+
+  if(!navigator.geolocation){
+    statusBox.innerHTML = '<span style="color:var(--red);">Your browser does not support location access. Please type the address manually.</span>';
+    return;
+  }
+
+  btn.disabled = true;
+  btnLabel.textContent = "Locating...";
+  statusBox.innerHTML = '<span>Getting your location...</span>';
+
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      capturedLat = position.coords.latitude;
+      capturedLng = position.coords.longitude;
+
+      try{
+        // Free reverse geocoding, no API key — runs from the browser, not our server.
+        const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${capturedLat}&lon=${capturedLng}`);
+        const data = await res.json();
+        document.getElementById('citizenAddress').value = data.display_name || `${capturedLat.toFixed(5)}, ${capturedLng.toFixed(5)}`;
+        statusBox.innerHTML = '<span style="color:var(--green);">✓ Location captured and address filled in — edit it if it looks off.</span>';
+      }catch(err){
+        document.getElementById('citizenAddress').value = `${capturedLat.toFixed(5)}, ${capturedLng.toFixed(5)}`;
+        statusBox.innerHTML = '<span style="color:var(--green);">✓ Location captured (coordinates filled in — could not look up the address name).</span>';
+      }finally{
+        btn.disabled = false;
+        btnLabel.textContent = "Use my location";
+      }
+    },
+    (error) => {
+      btn.disabled = false;
+      btnLabel.textContent = "Use my location";
+      let msg = "Could not get your location. Please type the address manually.";
+      if(error.code === error.PERMISSION_DENIED){
+        msg = "Location access was denied. Please type the address manually, or allow location access and try again.";
+      }
+      statusBox.innerHTML = `<span style="color:var(--red);">${msg}</span>`;
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+function switchAuthTab(tab){
+  document.getElementById('loginTab').classList.toggle('active', tab === 'login');
+  document.getElementById('registerTab').classList.toggle('active', tab === 'register');
+  document.getElementById('loginForm').classList.toggle('active', tab === 'login');
+  document.getElementById('registerForm').classList.toggle('active', tab === 'register');
+}
+
+async function checkAuthOnLoad(){
+  if(!authToken){ showAuthScreen(); return; }
+  try{
+    const res = await fetch(`${API_BASE}/auth/me`, { headers: { 'X-Auth-Token': authToken } });
+    if(!res.ok) throw new Error("invalid session");
+    currentCitizen = await res.json();
+    showMainPortal();
+  }catch(err){
+    localStorage.removeItem('nagrik_token');
+    authToken = null;
+    showAuthScreen();
+  }
+}
+
+function showAuthScreen(){
+  document.getElementById('authScreen').style.display = 'flex';
+  document.getElementById('mainPortal').style.display = 'none';
+  document.getElementById('headerRight').style.display = 'none';
+}
+
+function showMainPortal(){
+  document.getElementById('authScreen').style.display = 'none';
+  document.getElementById('mainPortal').style.display = 'block';
+  document.getElementById('headerRight').style.display = 'flex';
+  document.getElementById('welcomeName').textContent = currentCitizen.full_name;
+  document.getElementById('citizenName').value = currentCitizen.full_name || "";
+  document.getElementById('citizenPhone').value = currentCitizen.phone || "";
+  document.getElementById('citizenAddress').value = currentCitizen.address || "";
+  loadMyCases();
+}
+
+async function doRegister(){
+  const full_name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const phone = document.getElementById('regPhone').value.trim();
+  const address = document.getElementById('regAddress').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const errorBox = document.getElementById('registerError');
+  const btn = document.getElementById('registerBtn');
+  errorBox.classList.remove('show');
+
+  if(!full_name || !email || !phone || !password){
+    errorBox.textContent = "Please fill in your name, email, phone and password.";
+    errorBox.classList.add('show');
+    return;
+  }
+  if(password.length < 6){
+    errorBox.textContent = "Password must be at least 6 characters.";
+    errorBox.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = "Creating account...";
+  try{
+    const res = await fetch(`${API_BASE}/auth/register`, {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({full_name, email, phone, address, password})
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.detail || "Registration failed");
+
+    authToken = data.token;
+    localStorage.setItem('nagrik_token', authToken);
+    currentCitizen = data;
+    showMainPortal();
+  }catch(err){
+    errorBox.textContent = err.message || "Could not create your account. Please try again.";
+    errorBox.classList.add('show');
+  }finally{
+    btn.disabled = false; btn.textContent = "Create Account";
+  }
+}
+
+async function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errorBox = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+  errorBox.classList.remove('show');
+
+  if(!email || !password){
+    errorBox.textContent = "Please enter your email and password.";
+    errorBox.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true; btn.textContent = "Logging in...";
+  try{
+    const res = await fetch(`${API_BASE}/auth/login`, {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email, password})
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.detail || "Login failed");
+
+    authToken = data.token;
+    localStorage.setItem('nagrik_token', authToken);
+    currentCitizen = data;
+    showMainPortal();
+  }catch(err){
+    errorBox.textContent = err.message || "Could not log in. Check your email and password.";
+    errorBox.classList.add('show');
+  }finally{
+    btn.disabled = false; btn.textContent = "Log In";
+  }
+}
+
+function logout(){
+  fetch(`${API_BASE}/auth/logout`, { method: "POST", headers: { 'X-Auth-Token': authToken } }).catch(()=>{});
+  localStorage.removeItem('nagrik_token');
+  authToken = null;
+  currentCitizen = null;
+  showAuthScreen();
+}
+
+// ---------------------------------------------------------------- MY CASES
+async function loadMyCases(){
+  const container = document.getElementById('myCasesList');
+  try{
+    const res = await fetch(`${API_BASE}/citizen/my-cases`, { headers: { 'X-Auth-Token': authToken } });
+    if(!res.ok) throw new Error();
+    const cases = await res.json();
+
+    if(!cases.length){
+      container.innerHTML = '<div class="empty-track">You haven\'t filed any grievances yet.</div>';
+      return;
+    }
+    container.innerHTML = cases.map(c => {
+      const isResolved = c.status === "Resolved";
+      return `
+      <div class="my-case-item" onclick="document.getElementById('trackInput').value='${c.case_number}'; trackGrievance();">
+        <div class="my-case-top">
+          <span class="my-case-no">
+            ${isResolved ? '<svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="#1F8A5F" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ''}${c.case_number}
+          </span>
+          <span class="badge ${isResolved ? 'low' : (c.priority||'low').toLowerCase()}">${isResolved ? 'Resolved' : c.priority}</span>
+        </div>
+        <div class="my-case-meta">${c.category} · ${c.status} · ${new Date(c.created_at).toLocaleDateString('en-IN', {day:'numeric', month:'short'})}${c.image_url ? ' · 📷 Photo' : ''}</div>
+      </div>
+    `;
+    }).join('');
+  }catch(err){
+    container.innerHTML = '<div class="empty-track">Could not load your grievances.</div>';
+  }
+}
+
+// ---------------------------------------------------------------- SUBMIT
+function updateWordCount(){
+  const text = document.getElementById('grievanceText').value.trim();
+  const count = text ? text.split(/\s+/).length : 0;
+  document.getElementById('wordCount').textContent = count + " words";
+}
+
+function clearStaleTracker(){
+  document.getElementById('trackResult').style.display = "none";
+  document.getElementById('trackEmpty').style.display = "block";
+  document.getElementById('trackEmpty').textContent = "Submitting your grievance...";
+  document.getElementById('trackError').classList.remove('show');
+}
+
+async function submitGrievance(){
+  const text = document.getElementById('grievanceText').value.trim();
+  const citizen_name = document.getElementById('citizenName').value.trim();
+  const citizen_phone = document.getElementById('citizenPhone').value.trim();
+  const citizen_address = document.getElementById('citizenAddress').value.trim();
+  const btn = document.getElementById('submitBtn');
+  const btnLabel = document.getElementById('submitBtnLabel');
+  const errorBox = document.getElementById('submitError');
+  const resultBox = document.getElementById('submitResult');
+
+  errorBox.classList.remove('show');
+  resultBox.classList.remove('show');
+  clearStaleTracker();
+
+  if(!text){
+    errorBox.textContent = "Please describe your complaint before submitting.";
+    errorBox.classList.add('show');
+    return;
+  }
+  if(!citizen_address){
+    errorBox.textContent = "Please provide a location for this complaint — type it or tap \"Use my location\".";
+    errorBox.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  btnLabel.textContent = "Submitting...";
+
+  try{
+    const res = await fetch(`${API_BASE}/grievance`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json", "X-Auth-Token": authToken},
+      body: JSON.stringify({text, citizen_name, citizen_phone, citizen_address, location_lat: capturedLat, location_lng: capturedLng})
+    });
+    if(!res.ok) throw new Error("Submission failed");
+    const data = await res.json();
+
+    document.getElementById('resultCaseNo').textContent = data.case_number;
+    document.getElementById('resultDetail').textContent =
+      `Recorded as: "${text}". Routed to ${data.department} — priority marked ${data.priority}. Save this number to track your grievance.`;
+    resultBox.classList.add('show');
+
+    document.getElementById('grievanceText').value = "";
+    updateWordCount();
+
+    document.getElementById('trackInput').value = data.case_number;
+    await trackGrievance();
+    loadMyCases();
+  }catch(err){
+    errorBox.textContent = "Could not reach the grievance service. Make sure the API is running (uvicorn app.main:app --reload), then try again.";
+    errorBox.classList.add('show');
+  }finally{
+    btn.disabled = false;
+    btnLabel.textContent = "Submit grievance";
+  }
+}
+
+async function submitAudioGrievance(){
+  const fileInput = document.getElementById('audioFile');
+  const citizen_name = document.getElementById('citizenName').value.trim();
+  const citizen_phone = document.getElementById('citizenPhone').value.trim();
+  const citizen_address = document.getElementById('citizenAddress').value.trim();
+  const btn = document.getElementById('audioSubmitBtn');
+  const btnLabel = document.getElementById('audioSubmitBtnLabel');
+  const errorBox = document.getElementById('audioError');
+  const resultBox = document.getElementById('submitResult');
+
+  errorBox.classList.remove('show');
+  resultBox.classList.remove('show');
+  clearStaleTracker();
+
+  if(!fileInput.files || fileInput.files.length === 0){
+    errorBox.textContent = "Please choose an audio file first.";
+    errorBox.classList.add('show');
+    return;
+  }
+  if(!citizen_address){
+    errorBox.textContent = "Please provide a location for this complaint — type it or tap \"Use my location\" above.";
+    errorBox.classList.add('show');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("audio", fileInput.files[0]);
+  formData.append("citizen_name", citizen_name);
+  formData.append("citizen_phone", citizen_phone);
+  formData.append("citizen_address", citizen_address);
+  if(capturedLat !== null) formData.append("location_lat", capturedLat);
+  if(capturedLng !== null) formData.append("location_lng", capturedLng);
+
+  btn.disabled = true;
+  btnLabel.textContent = "Transcribing and submitting...";
+
+  try{
+    const res = await fetch(`${API_BASE}/grievance/audio`, {
+      method: "POST",
+      headers: { "X-Auth-Token": authToken },
+      body: formData
+    });
+    if(!res.ok) throw new Error("Submission failed");
+    const data = await res.json();
+
+    document.getElementById('resultCaseNo').textContent = data.case_number;
+    document.getElementById('resultDetail').textContent =
+      `Transcribed as: "${data.transcribed_text}". Routed to ${data.department} — priority marked ${data.priority}. Save this number to track your grievance.`;
+    resultBox.classList.add('show');
+
+    fileInput.value = "";
+
+    document.getElementById('trackInput').value = data.case_number;
+    await trackGrievance();
+    loadMyCases();
+  }catch(err){
+    errorBox.textContent = "Could not process the audio file. Make sure the API is running and the file is a supported audio format, then try again.";
+    errorBox.classList.add('show');
+  }finally{
+    btn.disabled = false;
+    btnLabel.textContent = "Submit voice complaint";
+  }
+}
+
+function previewPhoto(){
+  const fileInput = document.getElementById('photoFile');
+  const preview = document.getElementById('photoPreview');
+  if(fileInput.files && fileInput.files[0]){
+    preview.src = URL.createObjectURL(fileInput.files[0]);
+    preview.style.display = "block";
+  }else{
+    preview.style.display = "none";
+  }
+}
+
+async function submitPhotoGrievance(){
+  const fileInput = document.getElementById('photoFile');
+  const description = document.getElementById('photoDescription').value.trim();
+  const citizen_name = document.getElementById('citizenName').value.trim();
+  const citizen_phone = document.getElementById('citizenPhone').value.trim();
+  const citizen_address = document.getElementById('citizenAddress').value.trim();
+  const btn = document.getElementById('photoSubmitBtn');
+  const btnLabel = document.getElementById('photoSubmitBtnLabel');
+  const errorBox = document.getElementById('photoError');
+  const resultBox = document.getElementById('submitResult');
+
+  errorBox.classList.remove('show');
+  resultBox.classList.remove('show');
+  clearStaleTracker();
+
+  if(!fileInput.files || fileInput.files.length === 0){
+    errorBox.textContent = "Please choose a photo first.";
+    errorBox.classList.add('show');
+    return;
+  }
+  if(!citizen_address){
+    errorBox.textContent = "Please provide a location for this complaint — type it or tap \"Use my location\" above.";
+    errorBox.classList.add('show');
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("image", fileInput.files[0]);
+  formData.append("description", description);
+  formData.append("citizen_name", citizen_name);
+  formData.append("citizen_phone", citizen_phone);
+  formData.append("citizen_address", citizen_address);
+  if(capturedLat !== null) formData.append("location_lat", capturedLat);
+  if(capturedLng !== null) formData.append("location_lng", capturedLng);
+
+  btn.disabled = true;
+  btnLabel.textContent = "Analyzing photo...";
+
+  try{
+    const res = await fetch(`${API_BASE}/grievance/image`, {
+      method: "POST",
+      headers: { "X-Auth-Token": authToken },
+      body: formData
+    });
+    if(!res.ok) throw new Error("Submission failed");
+    const data = await res.json();
+
+    document.getElementById('resultCaseNo').textContent = data.case_number;
+    document.getElementById('resultDetail').textContent =
+      `Identified from photo as a ${data.category} issue. Routed to ${data.department} — priority marked ${data.priority}. Save this number to track your grievance.`;
+    resultBox.classList.add('show');
+
+    fileInput.value = "";
+    document.getElementById('photoDescription').value = "";
+    document.getElementById('photoPreview').style.display = "none";
+
+    document.getElementById('trackInput').value = data.case_number;
+    await trackGrievance();
+    loadMyCases();
+  }catch(err){
+    errorBox.textContent = "Could not process the photo. Make sure the API is running and try a JPG or PNG image, then try again.";
+    errorBox.classList.add('show');
+  }finally{
+    btn.disabled = false;
+    btnLabel.textContent = "Submit photo complaint";
+  }
+}
+
+// ---------------------------------------------------------------- TRACK
+async function trackGrievance(){
+  const caseNumber = document.getElementById('trackInput').value.trim();
+  const errorBox = document.getElementById('trackError');
+  const emptyBox = document.getElementById('trackEmpty');
+  const resultBox = document.getElementById('trackResult');
+
+  errorBox.classList.remove('show');
+
+  if(!caseNumber){
+    errorBox.textContent = "Enter a case number to track.";
+    errorBox.classList.add('show');
+    return;
+  }
+
+  try{
+    const res = await fetch(`${API_BASE}/cases/track/${encodeURIComponent(caseNumber)}`);
+    if(!res.ok) throw new Error("not found");
+    const data = await res.json();
+
+    emptyBox.style.display = "none";
+    resultBox.style.display = "block";
+
+    document.getElementById('trackCaseNo').textContent = data.case_number;
+    document.getElementById('trackGrievanceText').textContent = data.raw_text;
+
+    const trackImg = document.getElementById('trackImage');
+    if(data.image_url){
+      trackImg.src = `${API_BASE}${data.image_url}`;
+      trackImg.style.display = "block";
+    }else{
+      trackImg.style.display = "none";
+    }
+
+    document.getElementById('trackCategory').textContent = data.category;
+    document.getElementById('trackDepartment').textContent = data.department;
+    document.getElementById('trackLocation').textContent = data.location || "Not provided";
+    document.getElementById('trackDate').textContent = new Date(data.created_at).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+
+    const resolvedWrap = document.getElementById('trackResolvedWrap');
+    const statusEl = document.getElementById('trackStatus');
+    if(data.status === "Resolved" && data.resolved_at){
+      statusEl.innerHTML = '<svg style="width:14px;height:14px;vertical-align:-2px;margin-right:4px;" viewBox="0 0 24 24" fill="none" stroke="#1F8A5F" stroke-width="3"><path d="M20 6 9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>Resolved';
+      statusEl.style.color = "var(--green)";
+      document.getElementById('trackResolvedDate').textContent = new Date(data.resolved_at).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+      resolvedWrap.style.display = "block";
+    }else{
+      statusEl.textContent = data.status;
+      statusEl.style.color = "";
+      resolvedWrap.style.display = "none";
+    }
+
+    const pBadge = document.getElementById('trackPriority');
+    const pClass = (data.priority || 'low').toLowerCase();
+    pBadge.className = "badge " + pClass;
+    pBadge.textContent = data.priority + " priority";
+
+    renderSteps(data.status);
+  }catch(err){
+    resultBox.style.display = "none";
+    emptyBox.style.display = "block";
+    emptyBox.textContent = "Select a grievance above, or enter a case number to track it.";
+    errorBox.textContent = "No grievance found with that case number. Check it and try again.";
+    errorBox.classList.add('show');
+  }
+}
+
+function renderSteps(currentStatus){
+  const idx = STAGES.indexOf(currentStatus);
+  const currentIdx = idx === -1 ? 0 : idx;
+  const row = document.getElementById('stepsRow');
+  row.innerHTML = "";
+  const displayLabels = ["Filed", "Routed", "In progress", "Resolved"];
+
+  STAGES.forEach((stage, i) => {
+    const step = document.createElement('div');
+    step.className = "step";
+    if(i < currentIdx) step.classList.add('done');
+    if(i === currentIdx) step.classList.add('current');
+    step.innerHTML = `<div class="line"></div><div class="dot"></div><div class="label">${displayLabels[i]}</div>`;
+    row.appendChild(step);
+  });
+}
+
+checkAuthOnLoad();
+</script>
+
+</body>
+</html>
